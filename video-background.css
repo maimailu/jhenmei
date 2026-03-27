@@ -1,0 +1,96 @@
+header {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 0;
+  margin-bottom: 0;
+  /* 確保沒有上邊距 */
+  display: block;
+  /* 確保正確的顯示方式 */
+
+}
+
+
+header .logo2 {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  /* 水平置中 */
+  transform: translate(-50%, -50%);
+  /* 確保置中 */
+  width: 40%;
+  z-index: 2;
+
+}
+
+header .logo2[data-aos] {
+  transform: translate(-50%, -50%) !important;
+  /* 防止 AOS 覆蓋 */
+}
+
+header .logo2 img {
+  width: 100%;
+}
+
+
+.pic-txt {
+  position: absolute;
+  bottom: 0.5vw;
+  color: #fff;
+  font-family: "SweiSpringCJKtc-Medium";
+  font-size: 1.2vw;
+  text-transform: uppercase;
+  text-shadow: 0.05vw 0.05vw 0.05vw #333;
+  right: 1.5vw;
+}
+
+
+.bg-color {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+}
+
+/* 手機版樣式 */
+@media (max-width: 1440px) {
+
+  header .logo2 {
+    width: 50%;
+  }
+
+}
+
+@media (max-width: 768px) {
+  header {
+    min-height: auto;
+    /* 讓 header 高度自適應 */
+    height: 100vh;
+    /* 設定為螢幕高度 */
+  }
+
+  header .logo2 {
+    top: 50%;
+    /* 調整到正中央 */
+    width: 70%;
+    /* 縮小 logo 大小 */
+  }
+
+  .bg-color {
+    width: 100vw;
+    /* 背景色塊寬度填滿螢幕 */
+    height: 100vh;
+    /* 背景色塊高度填滿螢幕 */
+  }
+
+  .pic-txt {
+    font-size: 3vw;
+    /* 調整文字大小 */
+    bottom: 2vw;
+    /* 增加底部間距 */
+  }
+}
