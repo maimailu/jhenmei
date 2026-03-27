@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 
@@ -683,8 +683,99 @@
 				/* 增加字間距，質感較好 */
 			}
 
+
+			.video-section-rwd {
+				position: relative;
+				width: 100%;
+				/* 核心：解決影片變小、消失的關鍵，強制撐開高度 */
+				aspect-ratio: 16 / 9;
+				overflow: hidden;
+				margin: 20px 0;
+				background: #000;
+				/* 預留黑色背景 */
+				display: block !important;
+				/* 防止被誤設為 flex/none */
+				z-index: 1;
+			}
+
+			.video-section-rwd iframe {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100% !important;
+				/* 強制寬度 100% */
+				height: 100% !important;
+				/* 強制高度 100% */
+				border: 0;
+			}
+
+
 			/* --- 手機版 RWD 設定 --- */
 			@media (max-width: 768px) {
+
+				/* 1. 讓整體容器寬度回歸正常，不再被 2560px 撐爆 */
+				.container {
+					width: 100% !important;
+					max-width: 100% !important;
+					padding: 0 !important;
+					/* 容器本身不留白，交給內容決定 */
+					margin: 0 !important;
+					gap: 0 !important;
+				}
+
+				/* 2. 文字內容區：保留左右間距 (25px) */
+				.content-side {
+					padding: 40px 25px !important;
+					/* 這裡控制文字的左右留白 */
+					width: 100% !important;
+					box-sizing: border-box;
+				}
+
+				/* 3. 影片展示區：維持左右「死死的」滿版效果 */
+				.image-side {
+					width: 100% !important;
+					padding: 0 !important;
+					/* 影片不留白 */
+					margin: 0 !important;
+				}
+
+				/* 4. 影片容器高度與比例修正 */
+				.video-container {
+					position: relative;
+					width: 100%;
+					padding-bottom: 56.25%;
+					/* 強制 16:9 比例 */
+					height: 0;
+					overflow: hidden;
+					background-color: #000;
+				}
+
+				.video-container iframe {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100% !important;
+					height: 100% !important;
+					object-fit: cover;
+				}
+
+				/* 5. 其他排版微調 */
+				.header-group {
+					gap: 15px !important;
+				}
+
+				.slogan p {
+					font-size: 2rem !important;
+					/* 手機版字體稍微縮小才不會換行太亂 */
+					letter-spacing: 0.5rem !important;
+				}
+
+				.intro-text {
+					margin-top: 20px !important;
+				}
+
+
+
 				.gallery-container {
 					flex-direction: column;
 					/* 改為垂直堆疊 */
@@ -740,21 +831,10 @@
 				<div class="image-side wow animate__animated animate__fadeInUp" id="videoWrap">
 					<div class="image-video">
 
-						<!-- 內建影片串聯（本地影片檔案，放在專案裡面） -->
-						<!-- <video id="myVideo" src="videos/jhenmei-generation.mp4"
-							poster="videos/jhenmei-generation-cover.png" playsinline></video> -->
-
-						<video id="myVideo"
-							src="https://pub-b1b1aa3fa5e04711a9ba136282763955.r2.dev/jhenmei-generation.mp4"
-							poster="videos/jhenmei-generation-cover.png" playsinline preload="none"></video>
-						<!-- 加入preload="none"先讓封面讀取，影片等到使用者點擊才載入，這樣可以加快頁面初始載入速度，提升使用者體驗。 -->
-
-						<!-- 點擊整個區塊或按鈕都能播放／暫停 -->
-						<div class="overlay">
-							<div class="play-btn">
-								<span class="icon-play"></span>
-								<span class="icon-pause"></span>
-							</div>
+						<div class="video-section-rwd">
+							<iframe src="https://www.youtube.com/embed/IkUAejLfJYE?rel=0" frameborder="0"
+								allowfullscreen>
+							</iframe>
 						</div>
 
 						<span class="photo-note">情境示意影片</span>
