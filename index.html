@@ -132,6 +132,23 @@
 		align-items: center;
 	}
 
+	/* 上面有空間、下面還是貼近」的做法 */
+	.brand-section-park {
+		min-height: auto;
+		padding-top: 60px;
+		/* 增加第四單元和上方的距離，不會像 margin-top 
+		那樣比較容易連帶影響整體區塊關係，
+		下方跟 gallery-container 的距離還是維持你剛剛要的緊一點效果 */
+		padding-bottom: 20px;
+	}
+
+	.brand-section-park+.gallery-container {
+		margin-top: 12px;
+	}
+
+
+	/* 上面有空間、下面還是貼近」的做法 end */
+
 	.container {
 		max-width: 1400px;
 		margin: 0 auto;
@@ -782,6 +799,10 @@
 					align-items: center;
 				}
 
+				.brand-section-park {
+					padding-top: 24px;
+				}
+
 				.gallery-item {
 					width: 100%;
 					/* 手機版佔滿全寬 */
@@ -797,7 +818,7 @@
 
 
 		<!-- 第四單元 Section -->
-		<section class="brand-section">
+		<section class="brand-section brand-section-park">
 			<div class="container">
 
 				<!-- 左側：文字內容 -->
