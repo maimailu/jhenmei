@@ -559,745 +559,744 @@
 
 			</div>
 		</div>
+	</div>
 
 
 
 
+	<style>
+		/* ---  右欄：影片  --- */
+		.image-side {
+			flex: 1.2;
+		}
 
-		<style>
-			/* ---  右欄：影片  --- */
+		.image-video {
+			position: relative;
+			width: 100%;
+			aspect-ratio: 4 / 3;
+			overflow: hidden;
+			border-radius: 2px;
+		}
+
+		.image-video video {
+			width: 100%;
+			height: auto;
+			display: block;
+			box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.05);
+
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+
+
+		/* 播放按鈕 */
+		.play-btn {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 68px;
+			height: 68px;
+			border-radius: 50%;
+			border: 2.5px solid rgba(255, 255, 255, 0.9);
+			background: rgba(255, 255, 255, 0.18);
+			backdrop-filter: blur(6px);
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background 0.25s;
+
+			opacity: 1;
+			transition: opacity 0.3s;
+			/* 加個淡入淡出比較優雅 */
+		}
+
+		.play-btn:hover {
+			background: rgba(255, 255, 255, 0.35);
+		}
+
+		.play-btn::after {
+			content: '';
+			width: 0;
+			height: 0;
+			border-style: solid;
+			border-width: 12px 0 12px 22px;
+			border-color: transparent transparent transparent rgba(255, 255, 255, 0.95);
+			margin-left: 5px;
+		}
+
+		/* 當播放按鈕被隱藏時的狀態 */
+		#videoWrap.playing .play-btn {
+			opacity: 0;
+			pointer-events: none;
+			/* 隱藏後讓滑鼠點不到它，才不會干擾點擊影片 */
+		}
+
+		/* 影片圖說加在影片內，確保它跟著影片一起移動，並且不會被播放按鈕干擾。 */
+		.photo-note {
+			position: absolute;
+			bottom: 10px;
+			right: 14px;
+			font-size: 12px;
+			color: rgba(255, 255, 255, 0.75);
+			letter-spacing: 0.1em;
+			pointer-events: none;
+		}
+
+
+
+		/* 基礎設定 */
+		.gallery-container {
+			display: flex;
+			justify-content: space-between;
+			gap: 40px;
+			max-width: 1300px;
+			margin: 40px auto;
+			padding: 0 20px;
+		}
+
+		/* 每個項目的容器 */
+		.gallery-item {
+			flex: 1;
+			/* 平分寬度 */
+			text-align: center;
+		}
+
+		/* 圖片外框，用來控制比例 */
+		.img-box {
+			width: 100%;
+			aspect-ratio: 16 / 9;
+			/* 固定比例，避免圖片大小不一導致破版 */
+			overflow: hidden;
+			margin-bottom: 15px;
+		}
+
+		.img-box img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			/* 圖片裁切填滿，不變形 */
+			transition: transform 0.3s;
+			/* 增加一個簡單的滑鼠懸停效果 */
+		}
+
+		/* 滑鼠移上去圖片微放大的視覺感 */
+		.gallery-item:hover img {
+			transform: scale(1.05);
+		}
+
+		/* 文字標題樣式 */
+		.title {
+			font-family: "Noto Serif TC", serif;
+			/* 仿造圖片中的襯線體風格 */
+			font-size: 18px;
+			color: #333;
+			margin: 0;
+			letter-spacing: 2px;
+			/* 增加字間距，質感較好 */
+		}
+
+
+		.video-section-rwd {
+			position: relative;
+			width: 100%;
+			/* 核心：解決影片變小、消失的關鍵，強制撐開高度 */
+			aspect-ratio: 16 / 9;
+			overflow: hidden;
+			margin: 20px 0;
+			background: #000;
+			/* 預留黑色背景 */
+			display: block !important;
+			/* 防止被誤設為 flex/none */
+			z-index: 1;
+		}
+
+		.video-section-rwd iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100% !important;
+			/* 強制寬度 100% */
+			height: 100% !important;
+			/* 強制高度 100% */
+			border: 0;
+		}
+
+
+		/* --- 手機版 RWD 設定 --- */
+		@media (max-width: 768px) {
+
+			/* 1. 讓整體容器寬度回歸正常，不再被 2560px 撐爆 */
+			.container {
+				width: 100% !important;
+				max-width: 100% !important;
+				padding: 0 !important;
+				/* 容器本身不留白，交給內容決定 */
+				margin: 0 !important;
+				gap: 0 !important;
+			}
+
+			/* 2. 文字內容區：保留左右間距 (25px) */
+			.content-side {
+				padding: 40px 25px !important;
+				/* 這裡控制文字的左右留白 */
+				width: 100% !important;
+				box-sizing: border-box;
+			}
+
+			/* 3. 影片展示區：維持左右「死死的」滿版效果 */
 			.image-side {
-				flex: 1.2;
+				width: 100% !important;
+				padding: 0 !important;
+				/* 影片不留白 */
+				margin: 0 !important;
 			}
 
-			.image-video {
+			/* 4. 影片容器高度與比例修正 */
+			.video-container {
 				position: relative;
 				width: 100%;
-				aspect-ratio: 4 / 3;
-				overflow: hidden;
-				border-radius: 2px;
-			}
-
-			.image-video video {
-				width: 100%;
-				height: auto;
-				display: block;
-				box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.05);
-
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				display: block;
-			}
-
-
-
-			/* 播放按鈕 */
-			.play-btn {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				width: 68px;
-				height: 68px;
-				border-radius: 50%;
-				border: 2.5px solid rgba(255, 255, 255, 0.9);
-				background: rgba(255, 255, 255, 0.18);
-				backdrop-filter: blur(6px);
-				cursor: pointer;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				transition: background 0.25s;
-
-				opacity: 1;
-				transition: opacity 0.3s;
-				/* 加個淡入淡出比較優雅 */
-			}
-
-			.play-btn:hover {
-				background: rgba(255, 255, 255, 0.35);
-			}
-
-			.play-btn::after {
-				content: '';
-				width: 0;
+				padding-bottom: 56.25%;
+				/* 強制 16:9 比例 */
 				height: 0;
-				border-style: solid;
-				border-width: 12px 0 12px 22px;
-				border-color: transparent transparent transparent rgba(255, 255, 255, 0.95);
-				margin-left: 5px;
-			}
-
-			/* 當播放按鈕被隱藏時的狀態 */
-			#videoWrap.playing .play-btn {
-				opacity: 0;
-				pointer-events: none;
-				/* 隱藏後讓滑鼠點不到它，才不會干擾點擊影片 */
-			}
-
-			/* 影片圖說加在影片內，確保它跟著影片一起移動，並且不會被播放按鈕干擾。 */
-			.photo-note {
-				position: absolute;
-				bottom: 10px;
-				right: 14px;
-				font-size: 12px;
-				color: rgba(255, 255, 255, 0.75);
-				letter-spacing: 0.1em;
-				pointer-events: none;
-			}
-
-
-
-			/* 基礎設定 */
-			.gallery-container {
-				display: flex;
-				justify-content: space-between;
-				gap: 40px;
-				max-width: 1300px;
-				margin: 40px auto;
-				padding: 0 20px;
-			}
-
-			/* 每個項目的容器 */
-			.gallery-item {
-				flex: 1;
-				/* 平分寬度 */
-				text-align: center;
-			}
-
-			/* 圖片外框，用來控制比例 */
-			.img-box {
-				width: 100%;
-				aspect-ratio: 16 / 9;
-				/* 固定比例，避免圖片大小不一導致破版 */
 				overflow: hidden;
-				margin-bottom: 15px;
+				background-color: #000;
 			}
 
-			.img-box img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				/* 圖片裁切填滿，不變形 */
-				transition: transform 0.3s;
-				/* 增加一個簡單的滑鼠懸停效果 */
-			}
-
-			/* 滑鼠移上去圖片微放大的視覺感 */
-			.gallery-item:hover img {
-				transform: scale(1.05);
-			}
-
-			/* 文字標題樣式 */
-			.title {
-				font-family: "Noto Serif TC", serif;
-				/* 仿造圖片中的襯線體風格 */
-				font-size: 18px;
-				color: #333;
-				margin: 0;
-				letter-spacing: 2px;
-				/* 增加字間距，質感較好 */
-			}
-
-
-			.video-section-rwd {
-				position: relative;
-				width: 100%;
-				/* 核心：解決影片變小、消失的關鍵，強制撐開高度 */
-				aspect-ratio: 16 / 9;
-				overflow: hidden;
-				margin: 20px 0;
-				background: #000;
-				/* 預留黑色背景 */
-				display: block !important;
-				/* 防止被誤設為 flex/none */
-				z-index: 1;
-			}
-
-			.video-section-rwd iframe {
+			.video-container iframe {
 				position: absolute;
 				top: 0;
 				left: 0;
 				width: 100% !important;
-				/* 強制寬度 100% */
 				height: 100% !important;
-				/* 強制高度 100% */
-				border: 0;
+				object-fit: cover;
+			}
+
+			/* 5. 其他排版微調 */
+			.header-group {
+				gap: 15px !important;
+			}
+
+			.slogan p {
+				font-size: 2rem !important;
+				/* 手機版字體稍微縮小才不會換行太亂 */
+				letter-spacing: 0.5rem !important;
+			}
+
+			.intro-text {
+				margin-top: 20px !important;
 			}
 
 
-			/* --- 手機版 RWD 設定 --- */
-			@media (max-width: 768px) {
 
-				/* 1. 讓整體容器寬度回歸正常，不再被 2560px 撐爆 */
-				.container {
-					width: 100% !important;
-					max-width: 100% !important;
-					padding: 0 !important;
-					/* 容器本身不留白，交給內容決定 */
-					margin: 0 !important;
-					gap: 0 !important;
-				}
-
-				/* 2. 文字內容區：保留左右間距 (25px) */
-				.content-side {
-					padding: 40px 25px !important;
-					/* 這裡控制文字的左右留白 */
-					width: 100% !important;
-					box-sizing: border-box;
-				}
-
-				/* 3. 影片展示區：維持左右「死死的」滿版效果 */
-				.image-side {
-					width: 100% !important;
-					padding: 0 !important;
-					/* 影片不留白 */
-					margin: 0 !important;
-				}
-
-				/* 4. 影片容器高度與比例修正 */
-				.video-container {
-					position: relative;
-					width: 100%;
-					padding-bottom: 56.25%;
-					/* 強制 16:9 比例 */
-					height: 0;
-					overflow: hidden;
-					background-color: #000;
-				}
-
-				.video-container iframe {
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 100% !important;
-					height: 100% !important;
-					object-fit: cover;
-				}
-
-				/* 5. 其他排版微調 */
-				.header-group {
-					gap: 15px !important;
-				}
-
-				.slogan p {
-					font-size: 2rem !important;
-					/* 手機版字體稍微縮小才不會換行太亂 */
-					letter-spacing: 0.5rem !important;
-				}
-
-				.intro-text {
-					margin-top: 20px !important;
-				}
-
-
-
-				.gallery-container {
-					flex-direction: column;
-					/* 改為垂直堆疊 */
-					align-items: center;
-				}
-
-				.brand-section-park {
-					padding-top: 24px;
-				}
-
-				.gallery-item {
-					width: 100%;
-					/* 手機版佔滿全寬 */
-					margin-bottom: 30px;
-				}
-
-				.title {
-					font-size: 1.5rem;
-					/* 手機版字稍微小一點 */
-				}
+			.gallery-container {
+				flex-direction: column;
+				/* 改為垂直堆疊 */
+				align-items: center;
 			}
-		</style>
+
+			.brand-section-park {
+				padding-top: 24px;
+			}
+
+			.gallery-item {
+				width: 100%;
+				/* 手機版佔滿全寬 */
+				margin-bottom: 30px;
+			}
+
+			.title {
+				font-size: 1.5rem;
+				/* 手機版字稍微小一點 */
+			}
+		}
+	</style>
 
 
-		<!-- 第四單元 Section -->
-		<section class="brand-section brand-section-park">
-			<div class="container">
+	<!-- 第四單元 Section -->
+	<section class="brand-section brand-section-park">
+		<div class="container">
 
-				<!-- 左側：文字內容 -->
-				<div class="content-side wow animate__animated animate__fadeInUp">
-					<div class="header-group">
-
-
-						<div class="slogan">
-							<p>森活綠境</p> <!-- 第一欄，從頂開始 -->
-							<p>全效休開度假</p> <!-- 第二欄，margin-top 下移 -->
-						</div>
+			<!-- 左側：文字內容 -->
+			<div class="content-side wow animate__animated animate__fadeInUp">
+				<div class="header-group">
 
 
-						<div class="divider"></div>
-						<div class="intro-text">
-							<h3>層進式四季造景大花園<br>輕鬆散步串連公園</h3>
-							<ul class="detail-list">
-								<li>推門見綠，散步就是生活<br></li>
-								<li>輕鬆串連樂田公園、豐景公園，<br>
-									大樹草地相伴日常；</li>
-								<li>再步行至羅布森圖書館，<br>
-									在城市裡，收藏一段從容閱讀時光。</li>
-							</ul>
-						</div>
+					<div class="slogan">
+						<p>森活綠境</p> <!-- 第一欄，從頂開始 -->
+						<p>全效休開度假</p> <!-- 第二欄，margin-top 下移 -->
+					</div>
+
+
+					<div class="divider"></div>
+					<div class="intro-text">
+						<h3>層進式四季造景大花園<br>輕鬆散步串連公園</h3>
+						<ul class="detail-list">
+							<li>推門見綠，散步就是生活<br></li>
+							<li>輕鬆串連樂田公園、豐景公園，<br>
+								大樹草地相伴日常；</li>
+							<li>再步行至羅布森圖書館，<br>
+								在城市裡，收藏一段從容閱讀時光。</li>
+						</ul>
 					</div>
 				</div>
+			</div>
 
 
 
-				<!-- 右欄：影片 -->
-				<div class="image-side wow animate__animated animate__fadeInUp" id="videoWrap">
-					<div class="image-video">
+			<!-- 右欄：影片 -->
+			<div class="image-side wow animate__animated animate__fadeInUp" id="videoWrap">
+				<div class="image-video">
 
-						<div class="video-section-rwd">
-							<iframe src="https://www.youtube.com/embed/IkUAejLfJYE?rel=0" frameborder="0"
-								allowfullscreen>
-							</iframe>
-						</div>
-
-						<span class="photo-note">情境示意影片</span>
+					<div class="video-section-rwd">
+						<iframe src="https://www.youtube.com/embed/IkUAejLfJYE?rel=0" frameborder="0" allowfullscreen>
+						</iframe>
 					</div>
-				</div>
 
+					<span class="photo-note">情境示意影片</span>
+				</div>
 			</div>
 
-		</section>
-
-		<div class="gallery-container">
-			<div class="gallery-item wow animate__animated  animate__flipInX">
-				<div class="img-box">
-					<img src="pic/1/pic04-1.jpg" alt="樂田公園">
-				</div>
-				<p class="title">樂田公園</p>
-			</div>
-
-			<div class="gallery-item wow animate__animated  animate__flipInX">
-				<div class="img-box">
-					<img src="pic/1/pic04-2.jpg" alt="豐樂公園">
-				</div>
-				<p class="title">豐樂公園</p>
-			</div>
-
-			<div class="gallery-item wow animate__animated  animate__flipInX">
-				<div class="img-box">
-					<img src="pic/1/pic04-3.jpg" alt="羅布森圖書館">
-				</div>
-				<p class="title">羅布森圖書館</p>
-			</div>
 		</div>
 
+	</section>
 
-		<!-- 影片按鈕播放js -->
-		<script>
-			const wrap = document.getElementById('videoWrap');
-			const video = document.getElementById('myVideo');
+	<div class="gallery-container">
+		<div class="gallery-item wow animate__animated  animate__flipInX">
+			<div class="img-box">
+				<img src="pic/1/pic04-1.jpg" alt="樂田公園">
+			</div>
+			<p class="title">樂田公園</p>
+		</div>
 
-			// 1. 點擊容器就切換播放/暫停
-			wrap.addEventListener('click', () => {
-				video.paused ? video.play() : video.pause();
-			});
+		<div class="gallery-item wow animate__animated  animate__flipInX">
+			<div class="img-box">
+				<img src="pic/1/pic04-2.jpg" alt="豐樂公園">
+			</div>
+			<p class="title">豐樂公園</p>
+		</div>
 
-			// 2. 當影片「開始播放」時，把 class 加上去 (按鈕會消失)
-			video.addEventListener('play', () => {
-				wrap.classList.add('playing');
-			});
-
-			// 3. 當影片「暫停」或「播完」時，把 class 拿掉 (按鈕會出現)
-			// 補充：HTML5 影片播完時會自動觸發 pause 事件，所以寫這一個就夠了！
-			video.addEventListener('pause', () => {
-				wrap.classList.remove('playing');
-			});
-		</script>
+		<div class="gallery-item wow animate__animated  animate__flipInX">
+			<div class="img-box">
+				<img src="pic/1/pic04-3.jpg" alt="羅布森圖書館">
+			</div>
+			<p class="title">羅布森圖書館</p>
+		</div>
+	</div>
 
 
+	<!-- 影片按鈕播放js -->
+	<script>
+		const wrap = document.getElementById('videoWrap');
+		const video = document.getElementById('myVideo');
 
-		<style>
-			/* 基礎設定 ── 內容層浮在背景上面 ── */
+		// 1. 點擊容器就切換播放/暫停
+		wrap.addEventListener('click', () => {
+			video.paused ? video.play() : video.pause();
+		});
+
+		// 2. 當影片「開始播放」時，把 class 加上去 (按鈕會消失)
+		video.addEventListener('play', () => {
+			wrap.classList.add('playing');
+		});
+
+		// 3. 當影片「暫停」或「播完」時，把 class 拿掉 (按鈕會出現)
+		// 補充：HTML5 影片播完時會自動觸發 pause 事件，所以寫這一個就夠了！
+		video.addEventListener('pause', () => {
+			wrap.classList.remove('playing');
+		});
+	</script>
+
+
+
+	<style>
+		/* 基礎設定 ── 內容層浮在背景上面 ── */
+		.main-wrapper {
+			position: relative;
+			z-index: 1;
+			/* 蓋在背景圖上 */
+
+			font-family: "Noto Serif TC", serif;
+			color: white;
+
+			max-width: 1400px;
+			margin: 0 auto;
+
+			padding: 60px 10% 80px;
+			/* 左右各留 15% */
+		}
+
+
+		/* --- 下方兩個小框 (Info Boxes) --- */
+		.info-container {
+			display: flex;
+			justify-content: space-between;
+			gap: 20px;
+			margin-top: 20px;
+		}
+
+		.info-box {
+			flex: 1;
+			padding: 20px;
+			text-align: left;
+		}
+
+		.label {
+			font-size: 16px;
+			font-family: "Noto Serif TC", serif;
+			opacity: 0.8;
+			margin-bottom: 8px;
+		}
+
+		.info-detail {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+
+			margin: 6px;
+			font-size: 26px;
+			font-weight: 400;
+			font-family: "Noto Serif TC", serif;
+			color: white;
+		}
+
+
+
+		/* 按鈕樣式 */
+		.round-btn {
+			padding: 6px 15px;
+			border-radius: 20px;
+			text-decoration: none;
+			color: white;
+			font-size: 20px;
+			white-space: nowrap;
+		}
+
+		.round-btn.gold {
+			background: linear-gradient(to right, #FBA52A, #8A4B16, #AB691B, #704912);
+			/* 線性漸層 */
+		}
+
+		.round-btn.orange {
+			background: linear-gradient(to right, #FBA52A, #8A4B16, #AB691B, #704912);
+			/* 線性漸層 */
+		}
+
+
+		/* 表單底部容器 */
+		.form-footer {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			/* 水平置中 */
+			align-items: center;
+			/* 垂直置中 */
+			flex-wrap: wrap;
+			/* 自動換行，防止擠壓 */
+			gap: 10px;
+			/* 勾選框與連結之間的間距 */
+			margin: 10px 0;
+			color: #000;
+		}
+
+
+
+		.contact-relative {
+			position: relative;
+			/* 移除任何固定高度 */
+			height: auto;
+			min-height: unset;
+		}
+
+		/* ── 背景圖片區：絕對定位填滿父層 ── */
+		.pc-contact-bg {
+			position: absolute;
+			/* 從 block 改成 absolute */
+			inset: 0;
+			/* top/right/bottom/left 全部 0 */
+			width: 100%;
+			height: 100%;
+			/* 跟著 contact-relative 撐高 */
+			overflow: hidden;
+			display: block;
+			z-index: 0;
+		}
+
+		.pc-contact-bg img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			/* 圖片裁切填滿，不變形 */
+			object-position: center top;
+			display: block;
+		}
+
+		/* 手機版背景同理 */
+		.iphone-contact-bg {
+			display: none;
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			z-index: 0;
+		}
+
+		.iphone-contact-bg img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: center top;
+			display: block;
+		}
+
+
+
+
+		/* --- 手機版 RWD --- */
+
+		@media (max-width: 768px) {
+
+			/* 1. 讓內容不再絕對定位，改為隨內容撐高，避免背景圖太短 */
 			.main-wrapper {
 				position: relative;
-				z-index: 1;
-				/* 蓋在背景圖上 */
-
-				font-family: "Noto Serif TC", serif;
-				color: white;
-
-				max-width: 1400px;
-				margin: 0 auto;
-
-				padding: 60px 10% 80px;
-				/* 左右各留 15% */
-			}
-
-
-			/* --- 下方兩個小框 (Info Boxes) --- */
-			.info-container {
-				display: flex;
-				justify-content: space-between;
-				gap: 20px;
-				margin-top: 20px;
-			}
-
-			.info-box {
-				flex: 1;
-				padding: 20px;
-				text-align: left;
-			}
-
-			.label {
-				font-size: 16px;
-				font-family: "Noto Serif TC", serif;
-				opacity: 0.8;
-				margin-bottom: 8px;
-			}
-
-			.info-detail {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: 10px;
-
-				margin: 6px;
-				font-size: 26px;
-				font-weight: 400;
-				font-family: "Noto Serif TC", serif;
-				color: white;
-			}
-
-
-
-			/* 按鈕樣式 */
-			.round-btn {
-				padding: 6px 15px;
-				border-radius: 20px;
-				text-decoration: none;
-				color: white;
-				font-size: 20px;
-				white-space: nowrap;
-			}
-
-			.round-btn.gold {
-				background: linear-gradient(to right, #FBA52A, #8A4B16, #AB691B, #704912);
-				/* 線性漸層 */
-			}
-
-			.round-btn.orange {
-				background: linear-gradient(to right, #FBA52A, #8A4B16, #AB691B, #704912);
-				/* 線性漸層 */
-			}
-
-
-			/* 表單底部容器 */
-			.form-footer {
+				/* 關鍵：取消絕對定位 */
+				top: 0;
+				left: 0;
+				transform: none;
 				width: 100%;
-				display: flex;
-				justify-content: center;
-				/* 水平置中 */
-				align-items: center;
-				/* 垂直置中 */
-				flex-wrap: wrap;
-				/* 自動換行，防止擠壓 */
-				gap: 10px;
-				/* 勾選框與連結之間的間距 */
-				margin: 10px 0;
-				color: #000;
+				padding: 40px 15px;
+				/* 給予上下留白 */
+				box-sizing: border-box;
 			}
 
-
-
+			/* 2. 背景圖處理：讓背景圖變成真正的背景，或是與內容分離 */
 			.contact-relative {
-				position: relative;
-				/* 移除任何固定高度 */
-				height: auto;
-				min-height: unset;
+				display: flex;
+				flex-direction: column;
+				background-color: #2d4628;
+				/* 給一個與背景圖相近的底色 */
 			}
 
-			/* ── 背景圖片區：絕對定位填滿父層 ── */
 			.pc-contact-bg {
-				position: absolute;
-				/* 從 block 改成 absolute */
-				inset: 0;
-				/* top/right/bottom/left 全部 0 */
-				width: 100%;
-				height: 100%;
-				/* 跟著 contact-relative 撐高 */
-				overflow: hidden;
-				display: block;
-				z-index: 0;
-			}
-
-			.pc-contact-bg img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				/* 圖片裁切填滿，不變形 */
-				object-position: center top;
-				display: block;
-			}
-
-			/* 手機版背景同理 */
-			.iphone-contact-bg {
 				display: none;
-				position: absolute;
-				inset: 0;
+			}
+
+			/* 隱藏電腦版背景圖 */
+			.iphone-contact-bg {
+				display: block;
 				width: 100%;
-				height: 100%;
-				overflow: hidden;
-				z-index: 0;
 			}
 
 			.iphone-contact-bg img {
 				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				object-position: center top;
 				display: block;
 			}
 
-
-
-
-			/* --- 手機版 RWD --- */
-
-			@media (max-width: 768px) {
-
-				/* 1. 讓內容不再絕對定位，改為隨內容撐高，避免背景圖太短 */
-				.main-wrapper {
-					position: relative;
-					/* 關鍵：取消絕對定位 */
-					top: 0;
-					left: 0;
-					transform: none;
-					width: 100%;
-					padding: 40px 15px;
-					/* 給予上下留白 */
-					box-sizing: border-box;
-				}
-
-				/* 2. 背景圖處理：讓背景圖變成真正的背景，或是與內容分離 */
-				.contact-relative {
-					display: flex;
-					flex-direction: column;
-					background-color: #2d4628;
-					/* 給一個與背景圖相近的底色 */
-				}
-
-				.pc-contact-bg {
-					display: none;
-				}
-
-				/* 隱藏電腦版背景圖 */
-				.iphone-contact-bg {
-					display: block;
-					width: 100%;
-				}
-
-				.iphone-contact-bg img {
-					width: 100%;
-					display: block;
-				}
-
-				/* 3. 中間文字圖案縮小 */
-				.contact-text {
-					width: 100%;
-					height: auto;
-				}
-
-				/* 4. 資訊框由橫變直 */
-				.info-container {
-					flex-direction: column;
-					gap: 10px;
-					margin-top: 30px;
-				}
-
-				.info-box {
-					padding: 10px 0;
-					border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-					/* 增加分割線 */
-				}
-
-				.info-detail {
-					flex-direction: row;
-					/* 保持文字與按鈕左右排列 */
-					justify-content: space-between;
-					align-items: center;
-					font-size: 18px;
-					/* 手機版字體縮小一點點 */
-				}
-
-				.round-btn {
-					font-size: 16px;
-					/* 按鈕字體縮小 */
-					padding: 5px 12px;
-				}
-
-				/* 5. 表單優化 */
-				.contact-form {
-					margin-top: 40px;
-					width: 100%;
-				}
-
-				.form-control {
-					height: 45px;
-					/* 增加點擊區域 */
-					margin-bottom: 15px;
-				}
-
-				#submitBtn {
-					width: 100%;
-					/* 送出按鈕在手機版佔滿全寬 */
-					padding: 15px;
-					font-size: 20px;
-				}
-
-
-				/* 預設先隱藏手機版背景圖，桌機版才不會亂 */
-				.iphone-contact-bg {
-					display: none;
-				}
-
-				.form-footer {
-					flex-direction: column;
-					/* 改為垂直排列，讓點擊區域更大 */
-					align-items: center;
-					/* 置中 */
-					gap: 12px;
-					/* 增加上下間距，避免誤觸 */
-					margin: 15px 0;
-				}
-
-
+			/* 3. 中間文字圖案縮小 */
+			.contact-text {
+				width: 100%;
+				height: auto;
 			}
-		</style>
+
+			/* 4. 資訊框由橫變直 */
+			.info-container {
+				flex-direction: column;
+				gap: 10px;
+				margin-top: 30px;
+			}
+
+			.info-box {
+				padding: 10px 0;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+				/* 增加分割線 */
+			}
+
+			.info-detail {
+				flex-direction: row;
+				/* 保持文字與按鈕左右排列 */
+				justify-content: space-between;
+				align-items: center;
+				font-size: 18px;
+				/* 手機版字體縮小一點點 */
+			}
+
+			.round-btn {
+				font-size: 16px;
+				/* 按鈕字體縮小 */
+				padding: 5px 12px;
+			}
+
+			/* 5. 表單優化 */
+			.contact-form {
+				margin-top: 40px;
+				width: 100%;
+			}
+
+			.form-control {
+				height: 45px;
+				/* 增加點擊區域 */
+				margin-bottom: 15px;
+			}
+
+			#submitBtn {
+				width: 100%;
+				/* 送出按鈕在手機版佔滿全寬 */
+				padding: 15px;
+				font-size: 20px;
+			}
+
+
+			/* 預設先隱藏手機版背景圖，桌機版才不會亂 */
+			.iphone-contact-bg {
+				display: none;
+			}
+
+			.form-footer {
+				flex-direction: column;
+				/* 改為垂直排列，讓點擊區域更大 */
+				align-items: center;
+				/* 置中 */
+				gap: 12px;
+				/* 增加上下間距，避免誤觸 */
+				margin: 15px 0;
+			}
+
+
+		}
+	</style>
 
 
 
 
 
-		<!-- contact Section -->
+	<!-- contact Section -->
 
-		<div class="contact " id="contact">
+	<div class="contact " id="contact">
 
-			<div class=" contact-relative" id="">
+		<div class=" contact-relative" id="">
 
-				<div class=" pc-contact-bg">
-					<img src="pic/contact/contact-bg.jpg" alt="" style="width: 100%;">
-				</div>
-				<div class=" iphone-contact-bg">
-					<img src="pic/contact/iphone-contact-bg.jpg" alt="" style="">
-				</div>
-
-
-				<div class="main-wrapper">
-					<div class="contact-container wow animate__animated  animate__zoomIn">
-						<img src="pic/contact/contact-text.png"
-							alt="城市 x 森境 x 日常 打造生活之美 STRONGEST IN 13 早鳥先享 13期新奢特區 正2-3房 . 23-33坪" class="contact-text">
-					</div>
-
-					<div class="info-container">
-						<div class="info-box">
-							<p class="label">接待中心 |</p>
-							<div class="info-detail">
-								大墩南路 . 三民西路
-								<a href="https://maps.app.goo.gl/cmF4xMpjeZTwn9qh8" class="round-btn gold"
-									target="_blank">地圖導航</a>
-							</div>
-						</div>
-
-						<div class="info-box">
-							<p class="label">禮賓專線 |</p>
-							<div class="info-detail">
-								04-2471-5678
-								<a href="tel:0424715678" class="round-btn orange">立即撥打</a>
-							</div>
-						</div>
-					</div>
-
-
-
-
-					<div class="contact-form ">
-
-						<div class="text-center  wow animate__animated animate__fadeIn ">
-							<!--連絡我們表單-->
-							<form name="sentMessage" id="contactForm">
-
-								<div class="form-group">
-									<input type="text" class="form-control" placeholder="貴賓姓名" id="name" name="name"
-										required id="name">
-									<p class="help-block text-danger"></p>
-								</div>
-
-
-
-								<div class="form-group">
-									<input type="tel" class="form-control" placeholder="聯絡電話" id="phone" name="phone"
-										required id="phone">
-									<p class=" help-block text-danger"></p>
-								</div>
-
-
-
-								<div class="twzipcode" id="zipcode3">
-
-									<input type="hidden" data-role="zipcode" />
-								</div>
-
-
-
-
-								<div class="form-group">
-									<input type="tel" class="form-control" placeholder="備註" id="message" name="message">
-									<p class=" help-block text-danger"></p>
-								</div>
-
-
-
-								<div class="clearfix"></div>
-
-
-
-								<div class="form-foote text-center">
-									<label class="checkbox" style="color: #000;font-size: 14px;">
-										<label><input type="checkbox" id="ehicle3" name="vehicle3" value="Boat"
-												checked="" data-validation-required-message="請確認個資事項" required>
-											本人已悉知</label>
-
-										<a href="#exampleModal" class="portfolio-link" data-bs-toggle="modal"
-											data-toggle="modal" style="color: #ca0916;display: inline;">個人資料聲明事項</a>
-
-									</label>
-								</div>
-
-
-
-								<!-- 在寄信開始時先 disable 按鈕，寄信全部完成後 再恢復 enable。
-							你只要在你的 submit 事件裡加入兩行：寄送前： submitBtn.disabled = true;結束後： submitBtn.disabled = false; -->
-								<div class=" text-center">
-
-									<!-- <div id="success"></div> -->
-									<button type="submit" id="submitBtn" class="btn btn-xl" name="button">送出訊息</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-
-
+			<div class=" pc-contact-bg">
+				<img src="pic/contact/contact-bg.jpg" alt="" style="width: 100%;">
+			</div>
+			<div class=" iphone-contact-bg">
+				<img src="pic/contact/iphone-contact-bg.jpg" alt="" style="">
 			</div>
 
 
-			<!-- 
+			<div class="main-wrapper">
+				<div class="contact-container wow animate__animated  animate__zoomIn">
+					<img src="pic/contact/contact-text.png"
+						alt="城市 x 森境 x 日常 打造生活之美 STRONGEST IN 13 早鳥先享 13期新奢特區 正2-3房 . 23-33坪" class="contact-text">
+				</div>
+
+				<div class="info-container">
+					<div class="info-box">
+						<p class="label">接待中心 |</p>
+						<div class="info-detail">
+							大墩南路 . 三民西路
+							<a href="https://maps.app.goo.gl/cmF4xMpjeZTwn9qh8" class="round-btn gold"
+								target="_blank">地圖導航</a>
+						</div>
+					</div>
+
+					<div class="info-box">
+						<p class="label">禮賓專線 |</p>
+						<div class="info-detail">
+							04-2471-5678
+							<a href="tel:0424715678" class="round-btn orange">立即撥打</a>
+						</div>
+					</div>
+				</div>
+
+
+
+
+				<div class="contact-form ">
+
+					<div class="text-center  wow animate__animated animate__fadeIn ">
+						<!--連絡我們表單-->
+						<form name="sentMessage" id="contactForm">
+
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="貴賓姓名" id="name" name="name"
+									required id="name">
+								<p class="help-block text-danger"></p>
+							</div>
+
+
+
+							<div class="form-group">
+								<input type="tel" class="form-control" placeholder="聯絡電話" id="phone" name="phone"
+									required id="phone">
+								<p class=" help-block text-danger"></p>
+							</div>
+
+
+
+							<div class="twzipcode" id="zipcode3">
+
+								<input type="hidden" data-role="zipcode" />
+							</div>
+
+
+
+
+							<div class="form-group">
+								<input type="tel" class="form-control" placeholder="備註" id="message" name="message">
+								<p class=" help-block text-danger"></p>
+							</div>
+
+
+
+							<div class="clearfix"></div>
+
+
+
+							<div class="form-foote text-center">
+								<label class="checkbox" style="color: #000;font-size: 14px;">
+									<label><input type="checkbox" id="ehicle3" name="vehicle3" value="Boat" checked=""
+											data-validation-required-message="請確認個資事項" required>
+										本人已悉知</label>
+
+									<a href="#exampleModal" class="portfolio-link" data-bs-toggle="modal"
+										data-toggle="modal" style="color: #ca0916;display: inline;">個人資料聲明事項</a>
+
+								</label>
+							</div>
+
+
+
+							<!-- 在寄信開始時先 disable 按鈕，寄信全部完成後 再恢復 enable。
+							你只要在你的 submit 事件裡加入兩行：寄送前： submitBtn.disabled = true;結束後： submitBtn.disabled = false; -->
+							<div class=" text-center">
+
+								<!-- <div id="success"></div> -->
+								<button type="submit" id="submitBtn" class="btn btn-xl" name="button">送出訊息</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+
+		<!-- 
 				<div class="google_iframe">
 					<iframe width="100%" height="600" class="mb30"
 						src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3615.163437079052!2d121.47994599999998!3d25.028526999999993!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjXCsDAxJzQyLjciTiAxMjHCsDI4JzQ3LjgiRQ!5e0!3m2!1szh-TW!2stw!4v1762162731843!5m2!1szh-TW!2stw"
 						frameborder="0" allowfullscreen></iframe>
 				</div> -->
 
-		</div>
 	</div>
+
 
 
 
